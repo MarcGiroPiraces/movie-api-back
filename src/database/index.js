@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const chalk = require("chalk");
-const debug = require("debug")("tuitah:database");
+const debug = require("debug")("movie-api:database");
 
 const connectToDB = (connectionString) =>
   new Promise((resolve, reject) => {
