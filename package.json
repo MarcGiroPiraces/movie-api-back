@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^27.4.1",
     "eslint": "^8.10.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
@@ -26,6 +27,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "helmet": "^5.0.2",
+    "jest": "^27.5.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15"
   }
