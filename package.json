@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "start": "node src",
+    "startDev": "nodemon src -q"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "helmet": "^5.0.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15"
   }
 }
