@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test-watch": "jest --watchAll",
     "coverage": "jest --watchAll --coverage",
     "prepare": "husky install",
@@ -38,7 +38,9 @@
       "src/**/*.js",
       "!src/**/*.test.js",
       "!src/index.js",
-      "!src/server/initializeServer.js"
+      "!src/server/initializeServer.js",
+      "!src/database/index.js",
+      "!src/server/index.js"
     ]
   }
 }
