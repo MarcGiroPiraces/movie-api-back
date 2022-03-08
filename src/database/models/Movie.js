@@ -13,9 +13,6 @@ const movieSchema = new Schema({
   actors: { type: String, required: true },
   plot: { type: String, required: true },
   image: { type: String },
-  metascore: { type: Number },
-  imdbRating: { type: Number },
-  imdbID: { type: String },
   watchlist: { type: Boolean, default: false },
   rating: { type: Number },
 });

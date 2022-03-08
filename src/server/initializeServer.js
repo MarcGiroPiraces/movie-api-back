@@ -7,7 +7,7 @@ const startServer = (port, app) =>
     const server = app.listen(port, () => {
       debug(
         chalk.greenBright(
-          `Server is up at http://localhost${port === "80" ? "" : `:${port}`}`
+          `Server is up at http://localhost${port === "80" ? "" : port}`
         )
       );
       resolve();
