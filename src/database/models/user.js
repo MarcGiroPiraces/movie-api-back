@@ -6,7 +6,13 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   username: { type: String, required: true },
   password: { type: String, required: true },
-  movies: [{ type: Schema.Types.ObjectId, ref: "Movies" }],
+  movies: [
+    {
+      imdbID: { type: String },
+      rating: { type: Number },
+      watchlist: { type: Boolean, default: false },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema, "users");
