@@ -3,11 +3,11 @@ const debug = require("debug")("movie-api:server:initializeServer");
 
 const startServer = (port, app) =>
   new Promise((resolve, reject) => {
-    debug(chalk.whiteBright("Sarting server..."));
+    debug(chalk.whiteBright("Starting server..."));
     const server = app.listen(port, () => {
       debug(
         chalk.greenBright(
-          `Server is up at http://localhost${port === "80" ? "" : port}`
+          `Server is up at http://localhost:${port === "80" ? "" : port}`
         )
       );
       resolve();
