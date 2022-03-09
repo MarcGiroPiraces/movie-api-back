@@ -68,12 +68,12 @@ afterEach(async () => {
 
 describe("Given a moviesRouter", () => {
   describe("When it receives a get request at the movies?s=Hola endpoint", () => {
-    test("Then it should respond with status 200 and a movie titled Hola", async () => {
+    test("Then it should respond with status 200", async () => {
       await request(app).get("/movies?s=Hola").expect(200);
     });
   });
   describe("When it receives a get request at the movies?s=HOLA endpoint", () => {
-    test("Then it should respond with status 200 and a movie titled Hola", async () => {
+    test("Then it should respond with status 404", async () => {
       await request(app).get("/movies?s=HOLA").expect(404);
     });
   });
