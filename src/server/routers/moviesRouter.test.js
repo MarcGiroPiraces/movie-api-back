@@ -29,7 +29,7 @@ beforeEach(async () => {
     Plot: "summary of the movie",
     Runtime: 120,
     Writer: "movie writers",
-    Year: 1999,
+    Year: "1999",
   });
   Movie.create({
     Title: "Hello",
@@ -42,7 +42,7 @@ beforeEach(async () => {
     Plot: "summary of the movie",
     Runtime: 120,
     Writer: "movie writers",
-    Year: 1999,
+    Year: "1999",
   });
   Movie.create({
     Title: "Adeu",
@@ -55,7 +55,7 @@ beforeEach(async () => {
     Plot: "summary of the movie",
     Runtime: 120,
     Writer: "movie writers",
-    Year: 1999,
+    Year: "1999",
   });
 });
 

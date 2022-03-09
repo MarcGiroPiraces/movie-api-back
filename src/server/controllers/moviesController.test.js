@@ -2,6 +2,10 @@ const mockingoose = require("mockingoose");
 const Movie = require("../../database/models/Movie");
 const { getMovies } = require("./moviesController");
 
+afterEach(() => {
+  mockingoose.resetAll();
+});
+
 describe("Given a getMovies controller", () => {
   describe("When it receives a req and a res and it finds movies", () => {
     test.only("Then it should call res.json with the movies found", async () => {
