@@ -1,6 +1,7 @@
 const Movie = require("../../database/models/Movie");
 
 const getMovies = (req, res, next) => {
+  // const title = req.params
   const movies = Movie.find();
   if (!movies) {
     const error = new Error("No movies found");
