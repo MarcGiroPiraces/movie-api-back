@@ -1,18 +1,33 @@
+const mockingoose = require("mockingoose");
 const Movie = require("../../database/models/Movie");
 const { getMovies } = require("./moviesController");
 
+afterEach(() => {
+  mockingoose.resetAll();
+});
+
 describe("Given a getMovies controller", () => {
   describe("When it receives a req and a res and it finds movies", () => {
-    test("Then it should call res.json with the movies found", async () => {
+    test.only("Then it should call res.json with the movies found", async () => {
       const movies = [
         {
-          title: "Hola",
-          year: 1999,
-          type: "movie",
-          image:
+          Title: "Hola",
+          Year: 1999,
+          Type: "movie",
+          Poster:
             "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZTgwMDg4MjQ4MTE@._V1_SX300.jpg",
-          id: "6228796b92d232f647b99044",
+          Genre: "drama",
         },
+      ];
+
+      const moviesFiltered = [
+        expect.objectContaining({
+          Title: "Hola",
+          Year: 1999,
+          Type: "movie",
+          Poster:
+            "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZTgwMDg4MjQ4MTE@._V1_SX300.jpg",
+        }),
       ];
 
       const req = { query: { s: "Hola" } };
@@ -20,13 +35,10 @@ describe("Given a getMovies controller", () => {
         json: jest.fn(),
       };
 
-      Movie.find = jest.fn().mockResolvedValue(movies);
+      mockingoose(Movie).toReturn(movies, "find");
       await getMovies(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(movies);
-
-      // Act
-      // Assert
+      expect(res.json).toHaveBeenCalledWith(moviesFiltered);
     });
   });
 });

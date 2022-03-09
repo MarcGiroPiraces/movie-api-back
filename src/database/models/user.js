@@ -8,7 +8,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   movies: [
     {
-      imdbID: { type: String },
+      id: { type: Schema.Types.ObjectId, ref: "Movie" },
       rating: { type: Number },
       watchlist: { type: Boolean, default: false },
     },

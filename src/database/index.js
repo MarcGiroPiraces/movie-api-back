@@ -17,7 +17,7 @@ const connectToDB = (connectionString) =>
 
       debug(
         chalk.whiteBright("Connection to database ") +
-          chalk.greenBright("SUCCESSFULL")
+          chalk.greenBright("SUCCESSFUL")
       );
       resolve();
     });
