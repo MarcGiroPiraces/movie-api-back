@@ -69,9 +69,28 @@ describe("Given a moviesRouter", () => {
       await request(app).get("/movies?s=Hola").expect(200);
     });
   });
+
   describe("When it receives a get request at the movies?s=HOLA endpoint", () => {
     test("Then it should respond with status 404", async () => {
       await request(app).get("/movies?s=HOLA").expect(404);
+    });
+  });
+
+  describe("When it receives a delete request at the right endpoint", () => {
+    test("Then it should respond with status 200", async () => {
+      const movies = await request(app).get("/movies?s=Hola");
+      const { id } = movies.body[0];
+
+      const { body } = await request(app).delete(`/movies/${id}`).expect(200);
+
+      expect(body).toHaveProperty("message");
+    });
+  });
+  describe("When it receives a delete request at the wrong endpoint", () => {
+    test("Then it should respond with status 200", async () => {
+      const { body } = await request(app).delete(`/movies/1234ljk`).expect(404);
+
+      expect(body).toHaveProperty("message");
     });
   });
 });
