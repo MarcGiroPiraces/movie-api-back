@@ -13,8 +13,19 @@ const getMovies = async (req, res, next) => {
     next(error);
     return;
   }
-
   res.json(movies);
 };
 
-module.exports = { getMovies };
+const deleteMovie = async (req, res, next) => {
+  const { movieId } = req.params;
+  try {
+    await Movie.findByIdAndDelete(movieId);
+    res.json({ message: "Movie deleted" });
+  } catch (error) {
+    error.code = 404;
+    error.message = "We couldn't find the movie you requested to delete";
+    next(error);
+  }
+};
+
+module.exports = { getMovies, deleteMovie };
