@@ -3,9 +3,9 @@ const Movie = require("../../database/models/Movie");
 
 const getMovies = async (req, res, next) => {
   const search = req.query.s;
-  const movies = await Movie.find({ Title: { $eq: search } }).select(
-    "Title Type Poster Year"
-  );
+  const movies = await Movie.find({
+    Title: { $regex: search, $options: "m" },
+  }).select("Title Type Poster Year");
   if (movies.length < 1) {
     const error = new Error("No movies found");
     error.code = 404;
@@ -28,4 +28,38 @@ const deleteMovie = async (req, res, next) => {
   }
 };
 
-module.exports = { getMovies, deleteMovie };
+const createMovie = async (req, res, next) => {
+  const {
+    Title,
+    Year,
+    Runtime,
+    Genre,
+    Type,
+    Director,
+    Writer,
+    Actors,
+    Plot,
+    Poster,
+  } = req.body;
+  try {
+    await Movie.create({
+      Title,
+      Year,
+      Runtime,
+      Genre,
+      Type,
+      Director,
+      Writer,
+      Actors,
+      Plot,
+      Poster,
+    });
+    return res.status(201).json({ message: `Movie created` });
+  } catch (error) {
+    error.message = "We couldn't create the movie";
+    error.code = 400;
+    return next(error);
+  }
+};
+
+module.exports = { getMovies, deleteMovie, createMovie };

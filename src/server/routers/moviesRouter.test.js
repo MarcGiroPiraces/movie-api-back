@@ -72,7 +72,7 @@ describe("Given a moviesRouter", () => {
 
   describe("When it receives a get request at the movies?s=HOLA endpoint", () => {
     test("Then it should respond with status 404", async () => {
-      await request(app).get("/movies?s=HOLA").expect(404);
+      await request(app).get("/movies?s=HOLAS").expect(404);
     });
   });
 
