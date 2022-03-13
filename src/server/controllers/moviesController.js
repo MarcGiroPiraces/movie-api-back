@@ -54,7 +54,9 @@ const createMovie = async (req, res, next) => {
       Plot,
       Poster,
     });
-    return res.status(201).json({ message: `Movie created` });
+    return res
+      .status(201)
+      .json({ movie: { Title, Year, Type, Poster }, message: "Movie created" });
   } catch (error) {
     error.message = "We couldn't create the movie";
     error.code = 400;
