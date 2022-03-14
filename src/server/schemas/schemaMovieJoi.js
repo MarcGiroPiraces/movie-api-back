@@ -1,9 +1,9 @@
-const Joi = require("joi");
+const { Joi } = require("express-validation");
 
 const schemaMovieJoi = Joi.object({
   Title: Joi.string().required(),
   Year: Joi.string().alphanum().required(),
-  Runtime: Joi.string().number().required(),
+  Runtime: Joi.number().required(),
   Genre: Joi.string(),
   Type: Joi.string().required(),
   Director: Joi.string().required(),
@@ -13,4 +13,4 @@ const schemaMovieJoi = Joi.object({
   Poster: Joi.string(),
 });
 
-export default schemaMovieJoi;
+module.exports = schemaMovieJoi;
