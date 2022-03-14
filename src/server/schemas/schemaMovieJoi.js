@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const { Joi } = require("express-validation");
 
 const schemaMovieJoi = Joi.object({
   Title: Joi.string().required(),

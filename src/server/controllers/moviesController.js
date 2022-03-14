@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const { initializeApp } = require("firebase/app");
 const {
   getStorage,
@@ -46,7 +45,11 @@ const createMovie = async (req, res, next) => {
     const { body } = req;
 
     const oldFileName = path.join("uploads", req.file.filename);
-    const newFileName = path.join("uploads", req.body.Title);
+    const extension = req.file.originalname.split(".").pop();
+    const newFileName = path.join(
+      "uploads",
+      `${req.body.Title}-${Date.now()}.${extension}`
+    );
     fs.rename(oldFileName, newFileName, (error) => {
       if (error) {
         next(error);
@@ -78,8 +81,7 @@ const createMovie = async (req, res, next) => {
       error.code = 400;
       next(error);
     });
-
-    error.message = "We couldn't create the movie";
+    error.message = "Movie couldn't be created";
     error.code = 400;
     next(error);
   }

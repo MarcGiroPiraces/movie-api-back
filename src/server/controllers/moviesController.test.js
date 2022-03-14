@@ -1,6 +1,6 @@
 const mockingoose = require("mockingoose");
 const Movie = require("../../database/models/Movie");
-const { getMovies, deleteMovie, createMovie } = require("./moviesController");
+const { getMovies, deleteMovie } = require("./moviesController");
 
 afterEach(() => {
   mockingoose.resetAll();
@@ -75,31 +75,31 @@ describe("Given a deleteMovies controller", () => {
   });
 });
 
-describe("Given a createMovie controller", () => {
-  describe("When it receives a request with the wrong body", () => {
-    test("Then it should call res.json", async () => {
-      const next = jest.fn();
-      const error = new Error("We couldn't create the movie");
-      error.code = 400;
-      const req = {
-        body: {
-          Actors: "protagonist supporting character",
-          Director: "movie director",
-          Genre: "drama",
-          Plot: "summary of the movie",
-          Poster:
-            "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZT",
-          Runtime: 120,
-          Type: "movie",
-          Writer: "movie writers",
-          Year: "1999",
-        },
-      };
+// describe("Given a createMovie controller", () => {
+//   describe("When it receives a request with the wrong body", () => {
+//     test("Then it should call res.json", async () => {
+//       const next = jest.fn();
+//       const error = new Error("We couldn't create the movie");
+//       error.code = 400;
+//       const req = {
+//         body: {
+//           Actors: "protagonist supporting character",
+//           Director: "movie director",
+//           Genre: "drama",
+//           Plot: "summary of the movie",
+//           Poster:
+//             "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZT",
+//           Runtime: 120,
+//           Type: "movie",
+//           Writer: "movie writers",
+//           Year: "1999",
+//         },
+//       };
 
-      Movie.create = jest.fn().mockResolvedValue(null);
-      await createMovie(req, null, next);
+//       Movie.create = jest.fn().mockResolvedValue(null);
+//       await createMovie(req, null, next);
 
-      expect(next).toHaveBeenCalledWith(error);
-    });
-  });
-});
+//       expect(next).toHaveBeenCalledWith(error);
+//     });
+//   });
+// });

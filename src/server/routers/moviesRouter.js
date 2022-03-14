@@ -17,8 +17,8 @@ router.delete("/:movieId", deleteMovie);
 
 router.post(
   "/",
-  createMovieJoiValidation,
   upload.single("Poster"),
+  createMovieJoiValidation,
   createMovie
 );
 
