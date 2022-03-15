@@ -40,51 +40,59 @@ const deleteMovie = async (req, res, next) => {
   }
 };
 
-const createMovie = async (req, res, next) => {
-  try {
-    const { body } = req;
+const createMovie = async (req, res, next) =>
+  new Promise((resolve) => {
+    try {
+      const { body } = req;
 
-    const oldFileName = path.join("uploads", req.file.filename);
-    const extension = req.file.originalname.split(".").pop();
-    const newFileName = path.join(
-      "uploads",
-      `${req.body.Title}-${Date.now()}.${extension}`
-    );
-    fs.rename(oldFileName, newFileName, (error) => {
-      if (error) {
-        next(error);
-      }
-    });
-    fs.readFile(newFileName, async (error, file) => {
-      if (error) {
-        next(error);
-      } else {
-        const storageRef = ref(storage, body.Title);
-        await uploadBytes(storageRef, file);
-        const firebaseFileURL = await getDownloadURL(storageRef);
-        body.Poster = firebaseFileURL;
-        await Movie.create(body);
+      const oldFileName = path.join("uploads", req.file.filename);
+      const extension = req.file.originalname.split(".").pop();
+      const newFileName = path.join(
+        "uploads",
+        `${req.body.Title}-${Date.now()}.${extension}`
+      );
+      fs.rename(oldFileName, newFileName, (error) => {
+        if (error) {
+          next(error);
+          resolve();
+        }
+      });
 
-        res.status(201).json({
-          movie: {
-            Title: body.Title,
-            Year: body.Year,
-            Type: body.Type,
-            Poster: body.Poster,
-          },
-          message: "Movie created",
-        });
-      }
-    });
-  } catch (error) {
-    fs.unlink(path.join("uploads", req.file.filename), () => {
+      fs.readFile(newFileName, async (error, file) => {
+        if (error) {
+          next(error);
+          resolve();
+        } else {
+          const storageRef = ref(storage, body.Title);
+          await uploadBytes(storageRef, file);
+          const firebaseFileURL = await getDownloadURL(storageRef);
+          body.Poster = firebaseFileURL;
+
+          await Movie.create(body);
+
+          res.status(201).json({
+            movie: {
+              Title: body.Title,
+              Year: body.Year,
+              Type: body.Type,
+              Poster: body.Poster,
+            },
+            message: "Movie created",
+          });
+          resolve();
+        }
+      });
+    } catch (error) {
+      fs.unlink(path.join("uploads", req.file.filename), () => {
+        error.code = 400;
+        next(error);
+        resolve();
+      });
+      error.message = "Movie couldn't be created";
       error.code = 400;
       next(error);
-    });
-    error.message = "Movie couldn't be created";
-    error.code = 400;
-    next(error);
-  }
-};
+      resolve();
+    }
+  });
 
 module.exports = { getMovies, deleteMovie, createMovie };
