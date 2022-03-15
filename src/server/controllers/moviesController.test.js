@@ -1,6 +1,14 @@
 const mockingoose = require("mockingoose");
+const fs = require("fs");
 const Movie = require("../../database/models/Movie");
-const { getMovies, deleteMovie } = require("./moviesController");
+const { getMovies, deleteMovie, createMovie } = require("./moviesController");
+
+jest.mock("firebase/storage", () => ({
+  getStorage: () => "getStorage",
+  ref: () => {},
+  getDownloadURL: async () => "download.url",
+  uploadBytes: async () => {},
+}));
 
 afterEach(() => {
   mockingoose.resetAll();
@@ -71,6 +79,164 @@ describe("Given a deleteMovies controller", () => {
       await deleteMovie(req, null, next);
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given a createMovie controller", () => {
+  describe("When it is instantiated with a new movie in the body of the request and an image in the file of the request", () => {
+    test("Then it should call json with some info of the new movie and the firebase url in the Poster property", async () => {
+      const newFile = {
+        fieldname: "photo",
+        originalname: "the leftovers.jpeg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        destination: "uploads/",
+        filename: "93ec034d18753a982e662bc2fdf9a584",
+        path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+        size: 8750,
+      };
+      const newMovie = {
+        Title: "the leftovers",
+        Genre: "drama",
+        Type: "series",
+        Actors: "A lot of actors",
+        Director: "Great director",
+        Writer: "Damon Lindelof",
+        Year: "1999",
+        Runtime: "2000",
+        Plot: "Great show",
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      jest
+        .spyOn(fs, "rename")
+        .mockImplementation((oldpath, newpath, callback) => {
+          callback();
+        });
+      const req = {
+        body: newMovie,
+        file: newFile,
+      };
+      const next = jest.fn();
+
+      Movie.create = jest.fn().mockResolvedValue("please pass");
+      jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+        callback(null, newFile);
+      });
+      await createMovie(req, res, next);
+
+      expect(res.json).toHaveBeenCalled();
+    });
+  });
+
+  describe("When it's instantiated with a new movie in the body of the request, an image in the file of the request and has an error on fs.rename", () => {
+    test("Then it should should call next with an error", async () => {
+      const newFile = {
+        fieldname: "photo",
+        originalname: "the leftovers.jpeg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        destination: "uploads/",
+        filename: "93ec034d18753a982e662bc2fdf9a584",
+        path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+        size: 8750,
+      };
+      const newMovie = {
+        Title: "the leftovers",
+        Genre: "drama",
+        Type: "series",
+        Actors: "A lot of actors",
+        Director: "Great director",
+        Writer: "Damon Lindelof",
+        Year: "1999",
+        Runtime: "2000",
+        Plot: "Great show",
+      };
+      const req = {
+        body: newMovie,
+        file: newFile,
+      };
+      const next = jest.fn();
+
+      jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+        callback("error", null);
+      });
+      await createMovie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe("When it receives a request with the file property and no info of the movie on body property", () => {
+    test("Then it should call next with an error", async () => {
+      const newFile = {
+        fieldname: "photo",
+        originalname: "the leftovers.jpeg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        destination: "uploads/",
+        filename: "93ec034d18753a982e662bc2fdf9a584",
+        path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+        size: 8750,
+      };
+      const req = {
+        file: newFile,
+      };
+      const res = {
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+
+      jest.spyOn(fs, "unlink").mockImplementation((path, callback) => {
+        callback();
+      });
+      await createMovie(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe("When an error occurs renaming the file", () => {
+    test("Then it should call the next method with an error", async () => {
+      const newMovie = {
+        Title: "the leftovers",
+        Genre: "drama",
+        Type: "series",
+        Actors: "A lot of actors",
+        Director: "Great director",
+        Writer: "Damon Lindelof",
+        Year: "1999",
+        Runtime: "2000",
+        Plot: "Great show",
+      };
+      const newFile = {
+        fieldname: "photo",
+        originalname: "the leftovers.jpeg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        destination: "uploads/",
+        filename: "93ec034d18753a982e662bc2fdf9a584",
+        path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+        size: 8750,
+      };
+      const req = {
+        body: newMovie,
+        file: newFile,
+      };
+      const next = jest.fn();
+
+      jest
+        .spyOn(fs, "rename")
+        .mockImplementation((oldpath, newpath, callback) => {
+          callback("error");
+        });
+
+      await createMovie(req, null, next);
+
+      expect(next).toHaveBeenCalled();
     });
   });
 });

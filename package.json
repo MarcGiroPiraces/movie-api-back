@@ -30,6 +30,7 @@
     "express": "^4.17.3",
     "express-validation": "^3.0.8",
     "firebase": "^9.6.8",
+    "fs": "^0.0.1-security",
     "helmet": "^5.0.2",
     "jest": "^27.5.1",
     "joi": "^17.6.0",
