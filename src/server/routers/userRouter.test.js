@@ -2,14 +2,13 @@ require("dotenv").config();
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
 const request = require("supertest");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const databaseConnect = require("../../database");
 const User = require("../../database/models/user");
 const app = require("../index");
 const Movie = require("../../database/models/Movie");
 
 let database;
-let token;
 
 beforeAll(async () => {
   database = await MongoMemoryServer.create();
@@ -31,11 +30,11 @@ beforeEach(async () => {
     movies: {},
   });
 
-  const userDataToken = {
-    username: "user1",
-  };
+  // const userDataToken = {
+  //   username: "user1",
+  // };
 
-  token = jwt.sign(userDataToken, process.env.JWT_SECRET);
+  // token = jwt.sign(userDataToken, process.env.JWT_SECRET);
 
   await User.create({
     name: "user2",
