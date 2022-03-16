@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const createMovieJoiValidation = require("../../middlewares/createMovieJoiValidation");
+const createMovieJoiValidation = require("../middlewares/createMovieJoiValidation");
 const {
   getMovies,
   deleteMovie,

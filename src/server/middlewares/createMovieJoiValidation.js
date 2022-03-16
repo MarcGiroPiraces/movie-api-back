@@ -1,4 +1,4 @@
-const schemaMovieJoi = require("../server/schemas/schemaMovieJoi");
+const schemaMovieJoi = require("../schemas/schemaMovieJoi");
 
 const createMovieJoiValidation = (req, res, next) => {
   const { error: validationError } = schemaMovieJoi.validate(req.body);
