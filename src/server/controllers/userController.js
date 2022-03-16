@@ -3,6 +3,26 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../../database/models/user");
 
+const createUser = async (req, res, next) => {
+  const { name, username, password } = req.body;
+  if (!name || !username || !password) {
+    const error = new Error("Please fill the blank fields");
+    error.code = 400;
+    next(error);
+    return;
+  }
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    await User.create({ name, username, password: hashedPassword });
+    res.status(201).json({ name, username });
+  } catch (error) {
+    error.code = 409;
+    error.message = "Username already taken";
+    next(error);
+  }
+};
+
 const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
 
@@ -39,4 +59,4 @@ const loadUser = async (req, res) => {
   res.json(user);
 };
 
-module.exports = { loginUser, loadUser };
+module.exports = { createUser, loginUser, loadUser };
