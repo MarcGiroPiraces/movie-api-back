@@ -84,6 +84,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  await User.deleteMany({});
   await Movie.deleteMany({});
 });
 
