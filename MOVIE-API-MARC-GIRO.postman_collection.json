@@ -1,0 +1,254 @@
+{
+  "info": {
+    "_postman_id": "ea6dfebd-6505-46fd-9892-8c5e5e2bf863",
+    "name": "MOVIE-API-MARC-GIRO",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET Movies by Search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}movies?s=ol",
+          "host": ["{{url}}movies"],
+          "query": [
+            {
+              "key": "s",
+              "value": "ol"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Movie",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{url}}movies/622b0dab88f7052d2684602b",
+          "host": ["{{url}}movies"],
+          "path": ["622b0dab88f7052d2684602b"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Movie",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "Poster",
+              "type": "file",
+              "src": "/C:/Users/marc/Downloads/The_Leftovers_Serie_de_TV-403512194-large.jpg"
+            },
+            {
+              "key": "Title",
+              "value": "gjgjg",
+              "type": "text"
+            },
+            {
+              "key": "Genre",
+              "value": "Drama",
+              "type": "text"
+            },
+            {
+              "key": "Type",
+              "value": "Series",
+              "type": "text"
+            },
+            {
+              "key": "Actors",
+              "value": "A lot of actors",
+              "type": "text"
+            },
+            {
+              "key": "Director",
+              "value": "Good director",
+              "type": "text"
+            },
+            {
+              "key": "Writer",
+              "value": "Writers Room",
+              "type": "text"
+            },
+            {
+              "key": "Year",
+              "value": "1999",
+              "type": "text"
+            },
+            {
+              "key": "Runtime",
+              "value": "200",
+              "type": "text"
+            },
+            {
+              "key": "Plot",
+              "value": "Great show",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}movies",
+          "host": ["{{url}}movies"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Movie (localhost)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2MjMyMWE0ZGM4YzZjZGM2OTgwMTUxMjgiLCJpYXQiOjE2NDc0NTY1Mjl9.Wy8iCw3N8RQCri8-YjqJo-RtLEyhYm5w_oI93ZfStU0",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "Poster",
+              "type": "file",
+              "src": "/C:/Users/marc/Desktop/Entregues/Back sonar 14-03.PNG"
+            },
+            {
+              "key": "Title",
+              "value": "gjgjg",
+              "type": "text"
+            },
+            {
+              "key": "Genre",
+              "value": "Drama",
+              "type": "text"
+            },
+            {
+              "key": "Type",
+              "value": "Series",
+              "type": "text"
+            },
+            {
+              "key": "Actors",
+              "value": "A lot of actors",
+              "type": "text"
+            },
+            {
+              "key": "Director",
+              "value": "Good director",
+              "type": "text"
+            },
+            {
+              "key": "Writer",
+              "value": "Writers Room",
+              "type": "text"
+            },
+            {
+              "key": "Year",
+              "value": "1999",
+              "type": "text"
+            },
+            {
+              "key": "Runtime",
+              "value": "200",
+              "type": "text"
+            },
+            {
+              "key": "Plot",
+              "value": "Great show",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/movies",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["movies"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Login User",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"prova\", \"password\": \"1234\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}user/login",
+          "host": ["{{url}}user"],
+          "path": ["login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Register User (localhost) Copy",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"prova2\", \"username\": \"prova2\", \"password\": \"1234\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}user/register",
+          "host": ["{{url}}user"],
+          "path": ["register"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "https://movie-api-t7rg.onrender.com/",
+      "type": "string"
+    }
+  ]
+}
