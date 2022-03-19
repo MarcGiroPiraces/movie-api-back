@@ -5,6 +5,7 @@ const {
   getMovies,
   deleteMovie,
   createMovie,
+  updateMovie,
 } = require("../controllers/moviesController");
 const auth = require("../middlewares/auth");
 
@@ -22,6 +23,14 @@ router.post(
   upload.single("Poster"),
   createMovieJoiValidation,
   createMovie
+);
+
+router.put(
+  "/:movieId",
+  auth,
+  upload.single("Poster"),
+  createMovieJoiValidation,
+  updateMovie
 );
 
 module.exports = router;
