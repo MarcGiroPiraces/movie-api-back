@@ -14,10 +14,7 @@ const fireBaseApp = initializeApp(firebaseConfig);
 const storage = getStorage(fireBaseApp);
 
 const getMovies = async (req, res, next) => {
-  const search = req.query.s;
-  const movies = await Movie.find({
-    Title: { $regex: search, $options: "m" },
-  }).select("Title Type Poster Year");
+  const movies = await Movie.find({}).select("Title Type Poster Year");
   if (movies.length < 1) {
     const error = new Error("No movies found");
     error.code = 404;

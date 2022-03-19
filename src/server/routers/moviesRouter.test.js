@@ -95,12 +95,6 @@ describe("Given a moviesRouter", () => {
     });
   });
 
-  describe("When it receives a get request at the movies?s=HOLA endpoint", () => {
-    test("Then it should respond with status 404", async () => {
-      await request(app).get("/movies?s=HOLAS").expect(404);
-    });
-  });
-
   describe("When it receives a delete request at the right endpoint", () => {
     test("Then it should respond with status 200", async () => {
       const movies = await request(app).get("/movies?s=Hola");
