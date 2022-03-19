@@ -92,4 +92,67 @@ const createMovie = async (req, res, next) =>
     }
   });
 
-module.exports = { getMovies, deleteMovie, createMovie };
+const updateMovie = async (req, res, next) =>
+  new Promise((resolve) => {
+    try {
+      if (req.file) {
+        const movie = req.body;
+        const { movieId } = req.params;
+
+        const oldFileName = path.join("uploads", req.file.filename);
+        const extension = req.file.originalname.split(".").pop();
+        const newFileName = path.join(
+          "uploads",
+          `${req.body.Title}-${Date.now()}.${extension}`
+        );
+        fs.rename(oldFileName, newFileName, (error) => {
+          if (error) {
+            next(error);
+            resolve();
+          }
+        });
+
+        fs.readFile(newFileName, async (error, file) => {
+          if (error) {
+            next(error);
+            resolve();
+          } else {
+            const storageRef = ref(storage, movie.Title);
+            await uploadBytes(storageRef, file);
+
+            const firebaseFileURL = await getDownloadURL(storageRef);
+            movie.Poster = firebaseFileURL;
+            const updatedMovie = await Movie.findByIdAndUpdate(movieId, movie, {
+              new: true,
+            });
+
+            res.status(200).json(updatedMovie);
+            resolve();
+          }
+        });
+      } else {
+        (async () => {
+          const movie = req.body;
+          const { movieId } = req.params;
+
+          const updatedMovie = await Movie.findByIdAndUpdate(movieId, movie, {
+            new: true,
+          });
+
+          res.status(200).json(updatedMovie);
+          resolve();
+        })();
+      }
+    } catch (error) {
+      fs.unlink(path.join("uploads", req.file.filename), () => {
+        error.code = 400;
+        next(error);
+        resolve();
+      });
+      error.message = "We could not update the movie you wanted";
+      error.code = 400;
+      next(error);
+      resolve();
+    }
+  });
+module.exports = { getMovies, deleteMovie, createMovie, updateMovie };
