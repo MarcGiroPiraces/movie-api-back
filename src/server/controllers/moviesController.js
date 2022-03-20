@@ -139,7 +139,12 @@ const updateMovie = async (req, res, next) =>
             new: true,
           });
 
-          res.status(200).json(updatedMovie);
+          res
+            .status(200)
+            .json({
+              movie: { updatedMovie },
+              message: "Updated movie successfully",
+            });
           resolve();
         })();
       }
