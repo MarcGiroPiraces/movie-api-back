@@ -25,6 +25,19 @@ const getMovies = async (req, res, next) => {
   res.json(movies);
 };
 
+const getMovie = async (req, res, next) => {
+  const { movieId } = req.params;
+  const movie = await Movie.findById(movieId);
+  if (movie.length < 1) {
+    const error = new Error("No movies found");
+    error.code = 404;
+    error.message = "No movies found";
+    next(error);
+    return;
+  }
+  res.json(movie);
+};
+
 const deleteMovie = async (req, res, next) => {
   const { movieId } = req.params;
   try {
@@ -139,12 +152,10 @@ const updateMovie = async (req, res, next) =>
             new: true,
           });
 
-          res
-            .status(200)
-            .json({
-              movie: { updatedMovie },
-              message: "Updated movie successfully",
-            });
+          res.status(200).json({
+            movie: { updatedMovie },
+            message: "Updated movie successfully",
+          });
           resolve();
         })();
       }
@@ -160,4 +171,4 @@ const updateMovie = async (req, res, next) =>
       resolve();
     }
   });
-module.exports = { getMovies, deleteMovie, createMovie, updateMovie };
+module.exports = { getMovies, getMovie, deleteMovie, createMovie, updateMovie };

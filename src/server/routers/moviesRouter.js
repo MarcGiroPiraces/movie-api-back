@@ -6,6 +6,7 @@ const {
   deleteMovie,
   createMovie,
   updateMovie,
+  getMovie,
 } = require("../controllers/moviesController");
 const auth = require("../middlewares/auth");
 
@@ -14,6 +15,8 @@ const upload = multer({ dest: "uploads/" });
 const router = express.Router();
 
 router.get("/", getMovies);
+
+router.get("/:movieId", getMovie);
 
 router.delete("/:movieId", auth, deleteMovie);
 
