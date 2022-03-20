@@ -13,8 +13,6 @@ const {
 // const connectToMongoDB = require("../../database");
 // const app = require("..");
 
-jest.setTimeout(10000);
-
 jest.mock("firebase/storage", () => ({
   getStorage: () => "getStorage",
   ref: () => {},
