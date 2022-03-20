@@ -1,15 +1,15 @@
-// const mockingoose = require("mockingoose");
+const mockingoose = require("mockingoose");
 // const fs = require("fs");
 // // const { MongoMemoryServer } = require("mongodb-memory-server");
 // // const request = require("supertest");
 // // const { mongoose } = require("mongoose");
-// const Movie = require("../../database/models/Movie");
-// const {
-//   getMovies,
-//   deleteMovie,
-//   createMovie,
-//   // updateMovie,
-// } = require("./moviesController");
+const Movie = require("../../database/models/Movie");
+const {
+  getMovies,
+  //   deleteMovie,
+  //   createMovie,
+  //   // updateMovie,
+} = require("./moviesController");
 // // const connectToMongoDB = require("../../database");
 // // const app = require("..");
 
@@ -78,42 +78,42 @@
 //   await Movie.deleteMany({});
 // });
 
-// describe("Given a getMovies controller", () => {
-//   describe("When it receives a req and a res and it finds movies", () => {
-//     test("Then it should call res.json with the movies found", async () => {
-//       const movies = [
-//         {
-//           Title: "Hola",
-//           Year: "1999",
-//           Type: "movie",
-//           Poster:
-//             "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZTgwMDg4MjQ4MTE@._V1_SX300.jpg",
-//           Genre: "drama",
-//         },
-//       ];
+describe("Given a getMovies controller", () => {
+  describe("When it receives a req and a res and it finds movies", () => {
+    test("Then it should call res.json with the movies found", async () => {
+      const movies = [
+        {
+          Title: "Hola",
+          Year: "1999",
+          Type: "movie",
+          Poster:
+            "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZTgwMDg4MjQ4MTE@._V1_SX300.jpg",
+          Genre: "drama",
+        },
+      ];
 
-//       const moviesFiltered = [
-//         expect.objectContaining({
-//           Title: "Hola",
-//           Year: "1999",
-//           Type: "movie",
-//           Poster:
-//             "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZTgwMDg4MjQ4MTE@._V1_SX300.jpg",
-//         }),
-//       ];
+      const moviesFiltered = [
+        expect.objectContaining({
+          Title: "Hola",
+          Year: "1999",
+          Type: "movie",
+          Poster:
+            "https://m.media-amazon.com/images/M/MV5BNTE3MDc1MjY4NV5BMl5BanBnXkFtZTgwMDg4MjQ4MTE@._V1_SX300.jpg",
+        }),
+      ];
 
-//       const req = { query: { s: "Hola" } };
-//       const res = {
-//         json: jest.fn(),
-//       };
+      const req = { query: { s: "Hola" } };
+      const res = {
+        json: jest.fn(),
+      };
 
-//       mockingoose(Movie).toReturn(movies, "find");
-//       await getMovies(req, res);
+      mockingoose(Movie).toReturn(movies, "find");
+      await getMovies(req, res);
 
-//       expect(res.json).toHaveBeenCalledWith(moviesFiltered);
-//     });
-//   });
-// });
+      expect(res.json).toHaveBeenCalledWith(moviesFiltered);
+    });
+  });
+});
 
 // describe("Given a deleteMovies controller", () => {
 //   describe("When it receives a request with the right id", () => {
