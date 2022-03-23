@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const createMovieJoiValidation = require("../middlewares/createMovieJoiValidation");
+const { validate } = require("express-validation");
 const {
   getMovies,
   deleteMovie,
@@ -9,6 +9,7 @@ const {
   getMovie,
 } = require("../controllers/moviesController");
 const auth = require("../middlewares/auth");
+const schemaMovieJoi = require("../schemas/schemaMovieJoi");
 
 const upload = multer({ dest: "uploads/" });
 
@@ -24,16 +25,10 @@ router.post(
   "/",
   auth,
   upload.single("Poster"),
-  createMovieJoiValidation,
+  validate(schemaMovieJoi),
   createMovie
 );
 
-router.put(
-  "/:movieId",
-  auth,
-  upload.single("Poster"),
-  createMovieJoiValidation,
-  updateMovie
-);
+router.put("/:movieId", auth, upload.single("Poster"), updateMovie);
 
 module.exports = router;
