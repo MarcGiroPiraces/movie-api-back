@@ -30,12 +30,6 @@ beforeEach(async () => {
     movies: {},
   });
 
-  // const userDataToken = {
-  //   username: "user1",
-  // };
-
-  // token = jwt.sign(userDataToken, process.env.JWT_SECRET);
-
   await User.create({
     name: "user2",
     username: "user2",
