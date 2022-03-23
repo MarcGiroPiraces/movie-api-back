@@ -6,7 +6,7 @@
   },
   "item": [
     {
-      "name": "GET Movies by Search",
+      "name": "GET Movies",
       "request": {
         "method": "GET",
         "header": [],
@@ -39,6 +39,16 @@
     {
       "name": "POST Movie",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2MjMyMWE0ZGM4YzZjZGM2OTgwMTUxMjgiLCJpYXQiOjE2NDc0NTY1Mjl9.Wy8iCw3N8RQCri8-YjqJo-RtLEyhYm5w_oI93ZfStU0",
+              "type": "string"
+            }
+          ]
+        },
         "method": "POST",
         "header": [],
         "body": {
@@ -47,11 +57,11 @@
             {
               "key": "Poster",
               "type": "file",
-              "src": "/C:/Users/marc/Downloads/The_Leftovers_Serie_de_TV-403512194-large.jpg"
+              "src": "/C:/Users/marc/Desktop/Entregues/Front sonar 08-03.PNG"
             },
             {
               "key": "Title",
-              "value": "gjgjg",
+              "value": "Driveeeeee",
               "type": "text"
             },
             {
@@ -104,7 +114,7 @@
       "response": []
     },
     {
-      "name": "POST Movie (localhost)",
+      "name": "PUT Movie",
       "request": {
         "auth": {
           "type": "bearer",
@@ -116,7 +126,7 @@
             }
           ]
         },
-        "method": "POST",
+        "method": "PUT",
         "header": [],
         "body": {
           "mode": "formdata",
@@ -124,11 +134,11 @@
             {
               "key": "Poster",
               "type": "file",
-              "src": "/C:/Users/marc/Desktop/Entregues/Back sonar 14-03.PNG"
+              "src": "/C:/Users/marc/Downloads/512wD6d5VtL.jpg"
             },
             {
               "key": "Title",
-              "value": "gjgjg",
+              "value": "Update Movie 2",
               "type": "text"
             },
             {
@@ -174,11 +184,9 @@
           ]
         },
         "url": {
-          "raw": "http://localhost:5000/movies",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5000",
-          "path": ["movies"]
+          "raw": "{{url}}movies/622f334dd6687f4599c8607a",
+          "host": ["{{url}}movies"],
+          "path": ["622f334dd6687f4599c8607a"]
         }
       },
       "response": []
@@ -206,7 +214,7 @@
       "response": []
     },
     {
-      "name": "POST Register User (localhost) Copy",
+      "name": "POST Register User",
       "request": {
         "method": "POST",
         "header": [],
