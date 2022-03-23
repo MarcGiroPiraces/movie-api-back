@@ -38,7 +38,6 @@ beforeEach(async () => {
   });
 
   await Movie.create({
-    // _id: 1,
     Title: "Hola",
     Type: "Movie",
     Genre: "Dama",

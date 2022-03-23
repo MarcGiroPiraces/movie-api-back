@@ -124,32 +124,62 @@ describe("Given a /login endpoint", () => {
   });
 });
 
-describe("Given a /load-user endpoint", () => {
-  describe("When it receives a POST request with a wrong token", () => {
-    test("Then it should respond with an error and the message jwt malformed", async () => {
-      const expectedError = { error: true, message: "jwt malformed" };
+describe("Given a /register endpoint", () => {
+  describe("When it receives a request with a POST method and a new use on the body", () => {
+    test("Then it should respond with a 201 status and the new user", async () => {
+      const newUser = {
+        username: "hola",
+        name: "hola",
+        password: "hola",
+      };
 
       const { body } = await request(app)
-        .get("/user/load-user")
-        .set("authorization", `Bearer 24243fsadsfd`)
-        .expect(401);
+        .post("/user/register")
+        .send(newUser)
+        .expect(201);
 
-      expect(body).toHaveProperty("error", expectedError.error);
-      expect(body).toHaveProperty("message", expectedError.message);
+      expect(body).toHaveProperty("username", newUser.username);
     });
   });
 
-  describe("When it receives a POST request without token", () => {
-    test("Then it should respond with an error and the message Token missing", async () => {
-      const expectedError = { error: true, message: "Token missing" };
+  describe("When it receives a request with an existing username", () => {
+    test("Then it should return a 409 status and 'Username already taken' error message", async () => {
+      const expectedError = {
+        error: true,
+        message: "Username already taken",
+      };
+      const newUser = {
+        username: "user1",
+        name: "hola",
+        password: "hola",
+      };
 
       const { body } = await request(app)
-        .get("/user/load-user")
-        .set("authorization", "")
-        .expect(401);
+        .post("/user/register")
+        .send(newUser)
+        .expect(409);
 
-      expect(body).toHaveProperty("error", expectedError.error);
-      expect(body).toHaveProperty("message", expectedError.message);
+      expect(body).toEqual(expectedError);
+    });
+  });
+
+  describe("When it receives a request with a missing username", () => {
+    test("Then it should return a 400 status and 'Please fill the blank fields", async () => {
+      const expectedError = {
+        error: true,
+        message: "Please fill the blank fields",
+      };
+      const newUser = {
+        name: "hola",
+        password: "hola",
+      };
+
+      const { body } = await request(app)
+        .post("/user/register")
+        .send(newUser)
+        .expect(400);
+
+      expect(body).toEqual(expectedError);
     });
   });
 });
