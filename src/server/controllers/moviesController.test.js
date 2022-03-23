@@ -6,6 +6,7 @@ const mockingoose = require("mockingoose");
 const Movie = require("../../database/models/Movie");
 const {
   getMovies,
+  getMovie,
   //   deleteMovie,
   //   createMovie,
   //   // updateMovie,
@@ -113,438 +114,502 @@ describe("Given a getMovies controller", () => {
       expect(res.json).toHaveBeenCalledWith(moviesFiltered);
     });
   });
+
+  describe("When it receives a req and a res and it does not find movies", () => {
+    test("Then it should not call res.json", async () => {
+      const movies = [];
+
+      const req = { query: { s: "Hola" } };
+      const res = {
+        json: jest.fn(),
+      };
+
+      const next = jest.fn();
+      mockingoose(Movie).toReturn(movies, "find");
+      await getMovies(req, null, next);
+
+      expect(res.json).not.toHaveBeenCalled();
+    });
+  });
 });
 
-// describe("Given a deleteMovies controller", () => {
-//   describe("When it receives a request with the right id", () => {
-//     test("Then it should call res.json", async () => {
-//       const message = { message: "Movie deleted" };
-//       const req = { params: { movieId: "lkasjdg34" } };
-//       const res = {
-//         json: jest.fn(),
-//       };
+describe("Given a getMovie controller", () => {
+  describe("When it receives a request with the id", () => {
+    test("Then it should call method json with the movie", async () => {
+      const req = { params: { moveiId: "1" } };
+      const res = {
+        json: jest.fn(),
+      };
+      const movie = {
+        _id: "1",
+        Title: "Kingsman",
+        Year: "2014",
+        Runtime: 130,
+        Genre: "Action, Adventure, Comedy",
+        Type: "Movie",
+        Director: "Jane Goldman",
+        Writer: "Colin Firth, Taron Egerton, Samuel L Jackson",
+        Actors: "Colin Firth, Taron Egerton, Samuel L Jackson",
+        Plot: "A spy organisation recruits a promising street kid into the agency's training program, while a global threat emerges from a twisted tech genius.",
+        Poster:
+          "https://firebasestorage.googleapis.com/v0/b/marcgiro-movieapi.appspot.com/o/Kingsman?alt=media&token=37ceef0c-09b0-4116-a779-3ab9b1f8cf1e",
+      };
 
-//       Movie.findByIdAndDelete = jest.fn().mockResolvedValue(res.json);
-//       await deleteMovie(req, res);
+      Movie.findById = jest.fn().mockResolvedValue(movie);
+      await getMovie(req, res);
 
-//       expect(res.json).toHaveBeenCalledWith(message);
-//     });
-//   });
-//   describe("When it receives a request without the right id", () => {
-//     test("Then it should send an error", async () => {
-//       const next = jest.fn();
-//       const error = new Error(
-//         "We couldn't find the movie you requested to delete"
-//       );
-//       error.code = 404;
-//       const req = { params: { movieId: "lkasjdg34" } };
+      expect(res.json).toHaveBeenCalledWith(movie);
+    });
 
-//       Movie.findByIdAndDelete = jest.fn().mockResolvedValue(null);
-//       await deleteMovie(req, null, next);
+    describe("When it receives a request with the wrong id", () => {
+      test("Then it should call method json with the movie", async () => {
+        const req = { params: { moveiId: "1" } };
+        const res = {
+          json: jest.fn(),
+        };
+        const next = jest.fn();
+        const movie = [];
+        Movie.findById = jest.fn().mockResolvedValue(movie);
 
-//       expect(next).toHaveBeenCalledWith(error);
-//     });
-//   });
-// });
+        mockingoose(Movie).toReturn(movie, "findById");
+        await getMovie(req, null, next);
 
-// describe("Given a createMovie controller", () => {
-//   describe("When it is instantiated with a new movie in the body of the request and an image in the file of the request", () => {
-//     test("Then it should call json with some info of the new movie and the firebase url in the Poster property", async () => {
-//       const newFile = {
-//         fieldname: "photo",
-//         originalname: "the leftovers.jpeg",
-//         encoding: "7bit",
-//         mimetype: "image/jpeg",
-//         destination: "uploads/",
-//         filename: "93ec034d18753a982e662bc2fdf9a584",
-//         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-//         size: 8750,
-//       };
-//       const newMovie = {
-//         Title: "the leftovers",
-//         Genre: "drama",
-//         Type: "series",
-//         Actors: "A lot of actors",
-//         Director: "Great director",
-//         Writer: "Damon Lindelof",
-//         Year: "1999",
-//         Runtime: "2000",
-//         Plot: "Great show",
-//       };
-//       const res = {
-//         status: jest.fn().mockReturnThis(),
-//         json: jest.fn(),
-//       };
-//       jest
-//         .spyOn(fs, "rename")
-//         .mockImplementation((oldpath, newpath, callback) => {
-//           callback();
-//         });
-//       const req = {
-//         body: newMovie,
-//         file: newFile,
-//       };
-//       const next = jest.fn();
+        expect(res.json).not.toHaveBeenCalled();
+      });
+    });
+  });
 
-//       Movie.create = jest.fn().mockResolvedValue("please pass");
-//       jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
-//         callback(null, newFile);
-//       });
-//       await createMovie(req, res, next);
+  // describe("Given a deleteMovies controller", () => {
+  //   describe("When it receives a request with the right id", () => {
+  //     test("Then it should call res.json", async () => {
+  //       const message = { message: "Movie deleted" };
+  //       const req = { params: { movieId: "lkasjdg34" } };
+  //       const res = {
+  //         json: jest.fn(),
+  //       };
 
-//       expect(res.json).toHaveBeenCalled();
-//     });
-//   });
+  //       Movie.findByIdAndDelete = jest.fn().mockResolvedValue(res.json);
+  //       await deleteMovie(req, res);
 
-//   describe("When it's instantiated with a new movie in the body of the request, an image in the file of the request and has an error on fs.rename", () => {
-//     test("Then it should should call next with an error", async () => {
-//       const newFile = {
-//         fieldname: "photo",
-//         originalname: "the leftovers.jpeg",
-//         encoding: "7bit",
-//         mimetype: "image/jpeg",
-//         destination: "uploads/",
-//         filename: "93ec034d18753a982e662bc2fdf9a584",
-//         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-//         size: 8750,
-//       };
-//       const newMovie = {
-//         Title: "the leftovers",
-//         Genre: "drama",
-//         Type: "series",
-//         Actors: "A lot of actors",
-//         Director: "Great director",
-//         Writer: "Damon Lindelof",
-//         Year: "1999",
-//         Runtime: "2000",
-//         Plot: "Great show",
-//       };
-//       const req = {
-//         body: newMovie,
-//         file: newFile,
-//       };
-//       const next = jest.fn();
+  //       expect(res.json).toHaveBeenCalledWith(message);
+  //     });
+  //   });
+  //   describe("When it receives a request without the right id", () => {
+  //     test("Then it should send an error", async () => {
+  //       const next = jest.fn();
+  //       const error = new Error(
+  //         "We couldn't find the movie you requested to delete"
+  //       );
+  //       error.code = 404;
+  //       const req = { params: { movieId: "lkasjdg34" } };
 
-//       jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
-//         callback("error", null);
-//       });
-//       await createMovie(req, null, next);
+  //       Movie.findByIdAndDelete = jest.fn().mockResolvedValue(null);
+  //       await deleteMovie(req, null, next);
 
-//       expect(next).toHaveBeenCalled();
-//     });
-//   });
+  //       expect(next).toHaveBeenCalledWith(error);
+  //     });
+  //   });
+  // });
 
-//   describe("When it receives a request with the file property and no info of the movie on body property", () => {
-//     test("Then it should call next with an error", async () => {
-//       const newFile = {
-//         fieldname: "photo",
-//         originalname: "the leftovers.jpeg",
-//         encoding: "7bit",
-//         mimetype: "image/jpeg",
-//         destination: "uploads/",
-//         filename: "93ec034d18753a982e662bc2fdf9a584",
-//         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-//         size: 8750,
-//       };
-//       const req = {
-//         file: newFile,
-//       };
-//       const res = {
-//         json: jest.fn(),
-//       };
-//       const next = jest.fn();
+  // describe("Given a createMovie controller", () => {
+  //   describe("When it is instantiated with a new movie in the body of the request and an image in the file of the request", () => {
+  //     test("Then it should call json with some info of the new movie and the firebase url in the Poster property", async () => {
+  //       const newFile = {
+  //         fieldname: "photo",
+  //         originalname: "the leftovers.jpeg",
+  //         encoding: "7bit",
+  //         mimetype: "image/jpeg",
+  //         destination: "uploads/",
+  //         filename: "93ec034d18753a982e662bc2fdf9a584",
+  //         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  //         size: 8750,
+  //       };
+  //       const newMovie = {
+  //         Title: "the leftovers",
+  //         Genre: "drama",
+  //         Type: "series",
+  //         Actors: "A lot of actors",
+  //         Director: "Great director",
+  //         Writer: "Damon Lindelof",
+  //         Year: "1999",
+  //         Runtime: "2000",
+  //         Plot: "Great show",
+  //       };
+  //       const res = {
+  //         status: jest.fn().mockReturnThis(),
+  //         json: jest.fn(),
+  //       };
+  //       jest
+  //         .spyOn(fs, "rename")
+  //         .mockImplementation((oldpath, newpath, callback) => {
+  //           callback();
+  //         });
+  //       const req = {
+  //         body: newMovie,
+  //         file: newFile,
+  //       };
+  //       const next = jest.fn();
 
-//       jest.spyOn(fs, "unlink").mockImplementation((path, callback) => {
-//         callback();
-//       });
-//       await createMovie(req, res, next);
+  //       Movie.create = jest.fn().mockResolvedValue("please pass");
+  //       jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+  //         callback(null, newFile);
+  //       });
+  //       await createMovie(req, res, next);
 
-//       expect(next).toHaveBeenCalled();
-//     });
-//   });
+  //       expect(res.json).toHaveBeenCalled();
+  //     });
+  //   });
 
-//   describe("When an error occurs renaming the file", () => {
-//     test("Then it should call the next method with an error", async () => {
-//       const newMovie = {
-//         Title: "the leftovers",
-//         Genre: "drama",
-//         Type: "series",
-//         Actors: "A lot of actors",
-//         Director: "Great director",
-//         Writer: "Damon Lindelof",
-//         Year: "1999",
-//         Runtime: "2000",
-//         Plot: "Great show",
-//       };
-//       const newFile = {
-//         fieldname: "photo",
-//         originalname: "the leftovers.jpeg",
-//         encoding: "7bit",
-//         mimetype: "image/jpeg",
-//         destination: "uploads/",
-//         filename: "93ec034d18753a982e662bc2fdf9a584",
-//         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-//         size: 8750,
-//       };
-//       const req = {
-//         body: newMovie,
-//         file: newFile,
-//       };
-//       const next = jest.fn();
+  //   describe("When it's instantiated with a new movie in the body of the request, an image in the file of the request and has an error on fs.rename", () => {
+  //     test("Then it should should call next with an error", async () => {
+  //       const newFile = {
+  //         fieldname: "photo",
+  //         originalname: "the leftovers.jpeg",
+  //         encoding: "7bit",
+  //         mimetype: "image/jpeg",
+  //         destination: "uploads/",
+  //         filename: "93ec034d18753a982e662bc2fdf9a584",
+  //         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  //         size: 8750,
+  //       };
+  //       const newMovie = {
+  //         Title: "the leftovers",
+  //         Genre: "drama",
+  //         Type: "series",
+  //         Actors: "A lot of actors",
+  //         Director: "Great director",
+  //         Writer: "Damon Lindelof",
+  //         Year: "1999",
+  //         Runtime: "2000",
+  //         Plot: "Great show",
+  //       };
+  //       const req = {
+  //         body: newMovie,
+  //         file: newFile,
+  //       };
+  //       const next = jest.fn();
 
-//       jest
-//         .spyOn(fs, "rename")
-//         .mockImplementation((oldpath, newpath, callback) => {
-//           callback("error");
-//         });
+  //       jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+  //         callback("error", null);
+  //       });
+  //       await createMovie(req, null, next);
 
-//       await createMovie(req, null, next);
+  //       expect(next).toHaveBeenCalled();
+  //     });
+  //   });
 
-//       expect(next).toHaveBeenCalled();
-//     });
-//   });
-// });
+  //   describe("When it receives a request with the file property and no info of the movie on body property", () => {
+  //     test("Then it should call next with an error", async () => {
+  //       const newFile = {
+  //         fieldname: "photo",
+  //         originalname: "the leftovers.jpeg",
+  //         encoding: "7bit",
+  //         mimetype: "image/jpeg",
+  //         destination: "uploads/",
+  //         filename: "93ec034d18753a982e662bc2fdf9a584",
+  //         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  //         size: 8750,
+  //       };
+  //       const req = {
+  //         file: newFile,
+  //       };
+  //       const res = {
+  //         json: jest.fn(),
+  //       };
+  //       const next = jest.fn();
 
-// // describe("Given an updateMovie controller", () => {
-// //   describe("When it receives a request with the right body", () => {
-// //     test.only("Then it should call json method with the movie updated", async () => {
-// //       const updatedMovie = {
-// //         Title: "the leftovers updated",
-// //         Genre: "drama",
-// //         Type: "series",
-// //         Actors: "A lot of actors",
-// //         Director: "Great director",
-// //         Writer: "Damon Lindelof",
-// //         Year: "1999",
-// //         Runtime: "2000",
-// //         Plot: "Great show",
-// //       };
-// //       const newFile = {
-// //         fieldname: "photo",
-// //         originalname: "cristianito.jpeg",
-// //         encoding: "7bit",
-// //         mimetype: "image/jpeg",
-// //         destination: "uploads/",
-// //         filename: "93ec034d18753a982e662bc2fdf9a584",
-// //         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-// //         size: 8750,
-// //       };
+  //       jest.spyOn(fs, "unlink").mockImplementation((path, callback) => {
+  //         callback();
+  //       });
+  //       await createMovie(req, res, next);
 
-// //       const movies = await request(app).get("/movies");
-// //       const { id } = movies.body[0];
+  //       expect(next).toHaveBeenCalled();
+  //     });
+  //   });
 
-// //       const res = {
-// //         status: jest.fn().mockReturnThis(),
-// //         json: jest.fn(),
-// //       };
+  //   describe("When an error occurs renaming the file", () => {
+  //     test("Then it should call the next method with an error", async () => {
+  //       const newMovie = {
+  //         Title: "the leftovers",
+  //         Genre: "drama",
+  //         Type: "series",
+  //         Actors: "A lot of actors",
+  //         Director: "Great director",
+  //         Writer: "Damon Lindelof",
+  //         Year: "1999",
+  //         Runtime: "2000",
+  //         Plot: "Great show",
+  //       };
+  //       const newFile = {
+  //         fieldname: "photo",
+  //         originalname: "the leftovers.jpeg",
+  //         encoding: "7bit",
+  //         mimetype: "image/jpeg",
+  //         destination: "uploads/",
+  //         filename: "93ec034d18753a982e662bc2fdf9a584",
+  //         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  //         size: 8750,
+  //       };
+  //       const req = {
+  //         body: newMovie,
+  //         file: newFile,
+  //       };
+  //       const next = jest.fn();
 
-// //       jest
-// //         .spyOn(fs, "rename")
-// //         .mockImplementation((oldpath, newpath, callback) => {
-// //           callback();
-// //         });
+  //       jest
+  //         .spyOn(fs, "rename")
+  //         .mockImplementation((oldpath, newpath, callback) => {
+  //           callback("error");
+  //         });
 
-// //       const req = {
-// //         body: updatedMovie,
-// //         file: newFile,
-// //         params: id,
-// //       };
-// //       const next = jest.fn();
-// //       Movie.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
+  //       await createMovie(req, null, next);
 
-// //       jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
-// //         callback(null, newFile);
-// //       });
+  //       expect(next).toHaveBeenCalled();
+  //     });
+  //   });
+  // });
 
-// //       await updateMovie(req, res, next);
+  // // describe("Given an updateMovie controller", () => {
+  // //   describe("When it receives a request with the right body", () => {
+  // //     test.only("Then it should call json method with the movie updated", async () => {
+  // //       const updatedMovie = {
+  // //         Title: "the leftovers updated",
+  // //         Genre: "drama",
+  // //         Type: "series",
+  // //         Actors: "A lot of actors",
+  // //         Director: "Great director",
+  // //         Writer: "Damon Lindelof",
+  // //         Year: "1999",
+  // //         Runtime: "2000",
+  // //         Plot: "Great show",
+  // //       };
+  // //       const newFile = {
+  // //         fieldname: "photo",
+  // //         originalname: "cristianito.jpeg",
+  // //         encoding: "7bit",
+  // //         mimetype: "image/jpeg",
+  // //         destination: "uploads/",
+  // //         filename: "93ec034d18753a982e662bc2fdf9a584",
+  // //         path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  // //         size: 8750,
+  // //       };
 
-// //       expect(res.json).toHaveBeenCalled();
-// //     });
-// //   });
+  // //       const movies = await request(app).get("/movies");
+  // //       const { id } = movies.body[0];
 
-// // describe("When the rename function throw an error", () => {
-// //   test("Then it should call next method", async () => {
-// //     const newPlayer = {
-// //       name: "Benzema",
-// //       number: 7,
-// //       goals: 21,
-// //       assists: 3,
-// //       yellowCards: 4,
-// //       redCards: 1,
-// //       totalMatches: 21,
-// //       position: "Pívote",
-// //       id: "1",
-// //     };
-// //     const newFile = {
-// //       fieldname: "photo",
-// //       originalname: "cristianito.jpeg",
-// //       encoding: "7bit",
-// //       mimetype: "image/jpeg",
-// //       destination: "uploads/",
-// //       filename: "93ec034d18753a982e662bc2fdf9a584",
-// //       path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-// //       size: 8750,
-// //     };
+  // //       const res = {
+  // //         status: jest.fn().mockReturnThis(),
+  // //         json: jest.fn(),
+  // //       };
 
-// //     const res = {
-// //       status: jest.fn().mockReturnThis(),
-// //       json: jest.fn(),
-// //     };
+  // //       jest
+  // //         .spyOn(fs, "rename")
+  // //         .mockImplementation((oldpath, newpath, callback) => {
+  // //           callback();
+  // //         });
 
-// //     jest
-// //       .spyOn(fs, "rename")
-// //       .mockImplementation((oldpath, newpath, callback) => {
-// //         callback("error");
-// //       });
+  // //       const req = {
+  // //         body: updatedMovie,
+  // //         file: newFile,
+  // //         params: id,
+  // //       };
+  // //       const next = jest.fn();
+  // //       Movie.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
 
-// //     const req = {
-// //       body: newPlayer,
-// //       file: newFile,
-// //       params: "1",
-// //     };
-// //     const next = jest.fn();
-// //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
+  // //       jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+  // //         callback(null, newFile);
+  // //       });
 
-// //     await updatePlayer(req, res, next);
+  // //       await updateMovie(req, res, next);
 
-// //     expect(next).toHaveBeenCalled();
-// //   });
-// // });
+  // //       expect(res.json).toHaveBeenCalled();
+  // //     });
+  // //   });
 
-// // describe("When the readFile function throw an error", () => {
-// //   test("Then it should call next method", async () => {
-// //     const newPlayer = {
-// //       name: "Benzema",
-// //       number: 7,
-// //       goals: 21,
-// //       assists: 3,
-// //       yellowCards: 4,
-// //       redCards: 1,
-// //       totalMatches: 21,
-// //       position: "Pívote",
-// //       id: "1",
-// //     };
-// //     const newFile = {
-// //       fieldname: "photo",
-// //       originalname: "cristianito.jpeg",
-// //       encoding: "7bit",
-// //       mimetype: "image/jpeg",
-// //       destination: "uploads/",
-// //       filename: "93ec034d18753a982e662bc2fdf9a584",
-// //       path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-// //       size: 8750,
-// //     };
+  // // describe("When the rename function throw an error", () => {
+  // //   test("Then it should call next method", async () => {
+  // //     const newPlayer = {
+  // //       name: "Benzema",
+  // //       number: 7,
+  // //       goals: 21,
+  // //       assists: 3,
+  // //       yellowCards: 4,
+  // //       redCards: 1,
+  // //       totalMatches: 21,
+  // //       position: "Pívote",
+  // //       id: "1",
+  // //     };
+  // //     const newFile = {
+  // //       fieldname: "photo",
+  // //       originalname: "cristianito.jpeg",
+  // //       encoding: "7bit",
+  // //       mimetype: "image/jpeg",
+  // //       destination: "uploads/",
+  // //       filename: "93ec034d18753a982e662bc2fdf9a584",
+  // //       path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  // //       size: 8750,
+  // //     };
 
-// //     const res = {
-// //       status: jest.fn().mockReturnThis(),
-// //       json: jest.fn(),
-// //     };
+  // //     const res = {
+  // //       status: jest.fn().mockReturnThis(),
+  // //       json: jest.fn(),
+  // //     };
 
-// //     jest
-// //       .spyOn(fs, "rename")
-// //       .mockImplementation((oldpath, newpath, callback) => {
-// //         callback();
-// //       });
+  // //     jest
+  // //       .spyOn(fs, "rename")
+  // //       .mockImplementation((oldpath, newpath, callback) => {
+  // //         callback("error");
+  // //       });
 
-// //     const req = {
-// //       body: newPlayer,
-// //       file: newFile,
-// //       params: "1",
-// //     };
-// //     const next = jest.fn();
-// //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
+  // //     const req = {
+  // //       body: newPlayer,
+  // //       file: newFile,
+  // //       params: "1",
+  // //     };
+  // //     const next = jest.fn();
+  // //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
 
-// //     jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
-// //       callback("error");
-// //     });
+  // //     await updatePlayer(req, res, next);
 
-// //     await updatePlayer(req, res, next);
+  // //     expect(next).toHaveBeenCalled();
+  // //   });
+  // // });
 
-// //     expect(next).toHaveBeenCalled();
-// //   });
-// // });
+  // // describe("When the readFile function throw an error", () => {
+  // //   test("Then it should call next method", async () => {
+  // //     const newPlayer = {
+  // //       name: "Benzema",
+  // //       number: 7,
+  // //       goals: 21,
+  // //       assists: 3,
+  // //       yellowCards: 4,
+  // //       redCards: 1,
+  // //       totalMatches: 21,
+  // //       position: "Pívote",
+  // //       id: "1",
+  // //     };
+  // //     const newFile = {
+  // //       fieldname: "photo",
+  // //       originalname: "cristianito.jpeg",
+  // //       encoding: "7bit",
+  // //       mimetype: "image/jpeg",
+  // //       destination: "uploads/",
+  // //       filename: "93ec034d18753a982e662bc2fdf9a584",
+  // //       path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  // //       size: 8750,
+  // //     };
 
-// // describe("When it receives a req with an user but doesn't has file", () => {
-// //   test("Then it should call json method with the new player", async () => {
-// //     const newPlayer = {
-// //       name: "Benzema",
-// //       number: 7,
-// //       goals: 21,
-// //       assists: 3,
-// //       yellowCards: 4,
-// //       redCards: 1,
-// //       totalMatches: 33,
-// //       position: "Cierre",
-// //       id: "1",
-// //     };
+  // //     const res = {
+  // //       status: jest.fn().mockReturnThis(),
+  // //       json: jest.fn(),
+  // //     };
 
-// //     const res = {
-// //       status: jest.fn().mockReturnThis(),
-// //       json: jest.fn(),
-// //     };
+  // //     jest
+  // //       .spyOn(fs, "rename")
+  // //       .mockImplementation((oldpath, newpath, callback) => {
+  // //         callback();
+  // //       });
 
-// //     jest
-// //       .spyOn(fs, "rename")
-// //       .mockImplementation((oldpath, newpath, callback) => {
-// //         callback();
-// //       });
+  // //     const req = {
+  // //       body: newPlayer,
+  // //       file: newFile,
+  // //       params: "1",
+  // //     };
+  // //     const next = jest.fn();
+  // //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
 
-// //     const req = {
-// //       body: newPlayer,
-// //       file: null,
-// //       params: "1",
-// //     };
-// //     const next = jest.fn();
-// //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
+  // //     jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+  // //       callback("error");
+  // //     });
 
-// //     jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
-// //       callback(null, req.file);
-// //     });
+  // //     await updatePlayer(req, res, next);
 
-// //     await updatePlayer(req, res, next);
+  // //     expect(next).toHaveBeenCalled();
+  // //   });
+  // // });
 
-// //     expect(res.json).toHaveBeenCalled();
-// //   });
-// // });
+  // // describe("When it receives a req with an user but doesn't has file", () => {
+  // //   test("Then it should call json method with the new player", async () => {
+  // //     const newPlayer = {
+  // //       name: "Benzema",
+  // //       number: 7,
+  // //       goals: 21,
+  // //       assists: 3,
+  // //       yellowCards: 4,
+  // //       redCards: 1,
+  // //       totalMatches: 33,
+  // //       position: "Cierre",
+  // //       id: "1",
+  // //     };
 
-// // describe("When it's instantiated without a player", () => {
-// //   test("Then it should call the next method with an error", async () => {
-// //     const newFile = {
-// //       fieldname: "photo",
-// //       originalname: "cristianito.jpeg",
-// //       encoding: "7bit",
-// //       mimetype: "image/jpeg",
-// //       destination: "uploads/",
-// //       filename: "93ec034d18753a982e662bc2fdf9a584",
-// //       path: "uploads/93ec034d18753a982e662bc2fdf9a584",
-// //       size: 8750,
-// //     };
+  // //     const res = {
+  // //       status: jest.fn().mockReturnThis(),
+  // //       json: jest.fn(),
+  // //     };
 
-// //     const res = {
-// //       status: jest.fn().mockReturnThis(),
-// //       json: jest.fn(),
-// //     };
+  // //     jest
+  // //       .spyOn(fs, "rename")
+  // //       .mockImplementation((oldpath, newpath, callback) => {
+  // //         callback();
+  // //       });
 
-// //     jest
-// //       .spyOn(fs, "rename")
-// //       .mockImplementation((oldpath, newpath, callback) => {
-// //         callback();
-// //       });
+  // //     const req = {
+  // //       body: newPlayer,
+  // //       file: null,
+  // //       params: "1",
+  // //     };
+  // //     const next = jest.fn();
+  // //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
 
-// //     const req = {
-// //       file: newFile,
-// //       params: "1452334",
-// //     };
-// //     const next = jest.fn();
-// //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
+  // //     jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+  // //       callback(null, req.file);
+  // //     });
 
-// //     jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
-// //       callback(null, req.file);
-// //     });
+  // //     await updatePlayer(req, res, next);
 
-// //     await updatePlayer(req, res, next);
+  // //     expect(res.json).toHaveBeenCalled();
+  // //   });
+  // // });
 
-// //     expect(next).toHaveBeenCalled();
-// //   });
-// // });
-// // });
+  // // describe("When it's instantiated without a player", () => {
+  // //   test("Then it should call the next method with an error", async () => {
+  // //     const newFile = {
+  // //       fieldname: "photo",
+  // //       originalname: "cristianito.jpeg",
+  // //       encoding: "7bit",
+  // //       mimetype: "image/jpeg",
+  // //       destination: "uploads/",
+  // //       filename: "93ec034d18753a982e662bc2fdf9a584",
+  // //       path: "uploads/93ec034d18753a982e662bc2fdf9a584",
+  // //       size: 8750,
+  // //     };
+
+  // //     const res = {
+  // //       status: jest.fn().mockReturnThis(),
+  // //       json: jest.fn(),
+  // //     };
+
+  // //     jest
+  // //       .spyOn(fs, "rename")
+  // //       .mockImplementation((oldpath, newpath, callback) => {
+  // //         callback();
+  // //       });
+
+  // //     const req = {
+  // //       file: newFile,
+  // //       params: "1452334",
+  // //     };
+  // //     const next = jest.fn();
+  // //     Player.findByIdAndUpdate = jest.fn().mockResolvedValue("123");
+
+  // //     jest.spyOn(fs, "readFile").mockImplementation((file, callback) => {
+  // //       callback(null, req.file);
+  // //     });
+
+  // //     await updatePlayer(req, res, next);
+
+  // //     expect(next).toHaveBeenCalled();
+  // //   });
+  // // });
+  // // });
+});
